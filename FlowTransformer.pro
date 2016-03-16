@@ -8,7 +8,7 @@ QT       += core gui
 CONFIG += c++11
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
-TARGET = sans_titre1
+TARGET = FlowTransformer
 TEMPLATE = app
 
 
