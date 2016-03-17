@@ -16,6 +16,8 @@ public:
     TreeModel(const QStringList &headers, const QString &data,
               QObject *parent = 0);
     TreeModel(const QStringList &header, Node* root, QObject *parent = 0);
+    TreeModel(TreeItem* root, QObject *parent = 0);
+
     ~TreeModel();
 
     QVariant data(const QModelIndex &index, int role) const Q_DECL_OVERRIDE;

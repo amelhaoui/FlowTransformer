@@ -28,6 +28,12 @@ TreeModel::TreeModel(const QStringList &headers, Node *root, QObject *parent)
     setupModelData(root);
 }
 
+TreeModel::TreeModel(TreeItem *root, QObject *parent)
+    : QAbstractItemModel(parent)
+{
+    rootItem = root;
+}
+
 TreeModel::~TreeModel()
 {
     delete rootItem;

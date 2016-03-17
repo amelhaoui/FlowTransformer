@@ -719,15 +719,19 @@ main.o: main.cpp mainwindow.h \
 		../../../../Qt/5.5/clang_64/lib/QtWidgets.framework/Headers/qtreeview.h
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o main.o main.cpp
 
-mainwindow.o: mainwindow.cpp mainwindow.h \
-		ui_mainwindow.h \
+mainwindow.o: mainwindow.cpp inc/tinyxml2.h \
+		emc_parser.cpp \
+		emc_parse_utility.h \
+		../../../../Qt/5.5/clang_64/lib/QtCore.framework/Headers/QHash \
+		../../../../Qt/5.5/clang_64/lib/QtCore.framework/Headers/qhash.h \
 		treemodel.h \
 		../../../../Qt/5.5/clang_64/lib/QtCore.framework/Headers/QAbstractItemModel \
 		../../../../Qt/5.5/clang_64/lib/QtCore.framework/Headers/qabstractitemmodel.h \
-		emc_parse_utility.h \
 		../../../../Qt/5.5/clang_64/lib/QtCore.framework/Headers/QModelIndex \
 		../../../../Qt/5.5/clang_64/lib/QtCore.framework/Headers/QVariant \
 		../../../../Qt/5.5/clang_64/lib/QtCore.framework/Headers/qvariant.h \
+		mainwindow.h \
+		ui_mainwindow.h \
 		treemodelcompleter.h \
 		../../../../Qt/5.5/clang_64/lib/QtWidgets.framework/Headers/QCompleter \
 		../../../../Qt/5.5/clang_64/lib/QtWidgets.framework/Headers/qcompleter.h \
@@ -736,10 +740,6 @@ mainwindow.o: mainwindow.cpp mainwindow.h \
 		../../../../Qt/5.5/clang_64/lib/QtWidgets.framework/Headers/qmainwindow.h \
 		../../../../Qt/5.5/clang_64/lib/QtGui.framework/Headers/QStandardItemModel \
 		../../../../Qt/5.5/clang_64/lib/QtGui.framework/Headers/qstandarditemmodel.h \
-		inc/tinyxml2.h \
-		emc_parser.cpp \
-		../../../../Qt/5.5/clang_64/lib/QtCore.framework/Headers/QHash \
-		../../../../Qt/5.5/clang_64/lib/QtCore.framework/Headers/qhash.h \
 		treeitem.h \
 		../../../../Qt/5.5/clang_64/lib/QtCore.framework/Headers/QList \
 		../../../../Qt/5.5/clang_64/lib/QtCore.framework/Headers/qlist.h \

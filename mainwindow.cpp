@@ -1,8 +1,10 @@
-#include "mainwindow.h"
+
 #include "expat.h"
 #include "inc/tinyxml2.h"
 #include "emc_parser.cpp"
 #include "treemodel.h"
+#include "mainwindow.h"
+
 #include "treeitem.h"
 #include "emc_parse_utility.h"
 #include "itemtabledelegate.h"
@@ -511,7 +513,7 @@ print_to_xml (XMLDocument& xmlDoc, TreeModel* m_target, QHash<QString, QString>&
 
     QString path = root_data; // path used in mapping
     // print using a helper function
-    for (int i = 0; i < root->childCount() - 1; ++i) { // -1 because the last one is "Attributes"
+    for (int i = root->childCount() - 1; i > 0; --i) { // -1 because the last one is "Attributes"
         QString child_tag = root->child(i)->data(0).toString();
         QString child_path = path + "." + child_tag;
         print_to_xml_Helper(root->child(i), pRoot->ToElement(), xmlDoc, values_target, occurence, mapping, child_path);
@@ -601,19 +603,116 @@ void MainWindow::on_btn_upload_model_target_clicked()
 {
     QString fileName;
     fileName = QFileDialog::getOpenFileName(this,
-                                            tr("Load your input"), "/", tr("File (*.xml *.xls)"));
-    char            buffer[BUFFER_SIZE];
+                                            tr("Load your mapping"), "/", tr("File (*.txt)"));
+
+    //    char            buffer[BUFFER_SIZE];
+    //    ModelXML* model_a = new ModelXML(NULL, "american");
+    //    parse_xml(buffer, BUFFER_SIZE,  fileName.toStdString().c_str(), model_a, mapping);
+    //    // use target model if available
+    //    if (model_cible != NULL)
+    //        model_target = qobject_cast<TreeModel*> (model_source);
+    //    else
+
     if (fileName.isEmpty())
         return;
-    ModelXML* model_a = new ModelXML(NULL, "american");
-    parse_xml(buffer, BUFFER_SIZE,  fileName.toStdString().c_str(), model_a, mapping);
-    QStringList headers;
-    headers << tr("Tag");
-//    // use target model if available
-//    if (model_cible != NULL)
-//        model_target = qobject_cast<TreeModel*> (model_source);
-//    else
-        model_target = new TreeModel(headers, model_a->root);
 
+    QFile file(fileName);
+
+    if(!file.open(QIODevice::ReadOnly))
+        return;
+    QDataStream in(&file);
+
+    // todo : check if file data is valid
+    QStack<pair<TreeItem*, int>*> s;
+    QVector<QVariant> data;
+    int num;
+    QVariant var;
+    in >> var >> num;
+    data << "Tag";
+    TreeItem* root = new TreeItem(data);
+    root->insertChildren(0, 1, var);
+    s.push(new pair<TreeItem*, int>(root->child(0), num));
+    // now we have created our root and know how many childs it has
+
+    deserialize(in, s);
+
+    model_target = new TreeModel(root);
     treeViewTarget->setModel(model_target);
+}
+void MainWindow::deserialize(QDataStream &in, QStack<pair<TreeItem*, int>*>& s) {
+    if (s.empty())
+        return;
+
+    TreeItem* current = s.top()->first;
+    int num_childs = s.top()->second;
+    s.pop();
+
+    QVariant var;
+    int num;
+
+    for (int i = 0; i < num_childs; ++i) { // until - 1 because the last element is Attributes
+        in >> var >> num;
+        current->insertChildren(i, 1, var);
+        s.push(new pair<TreeItem*, int>(current->child(i), num));
+        // before we continue
+        deserialize(in, s);
+    }
+}
+
+void MainWindow::on_pushButton_clicked()
+{
+    TreeModel* source_model = qobject_cast<TreeModel*> (sourceView->model());
+    serializeModel(source_model, this);
+}
+
+void MainWindow::serializeModel(TreeModel* model, MainWindow* mainWindow)
+{
+    // serialize model into a file
+    if (model == NULL)
+        return;
+    // fake root is the header, child(0) represent the tree root
+    TreeItem* root = model->getRoot();
+    if (root == NULL)
+        return;
+    root = root->child(0);
+
+    // we suppose it's not an empty tree, checked that at beggining
+    QString fileName = QFileDialog::getSaveFileName(mainWindow, "Save Mapping",
+                                                    QStandardPaths::writableLocation(QStandardPaths::DocumentsLocation),
+                                                    "Text files (*.txt)");
+    if (fileName.isEmpty())
+        return;
+
+    QFile file(fileName);
+
+    if(!file.open(QIODevice::WriteOnly))
+        return;
+
+    QDataStream out(&file);
+
+    // we use a stack to traverse the structure and serialize it's content
+    QStack<TreeItem*> s;
+    // initialise it with root element
+    s.push(root);
+
+    while (!s.empty()) {
+        // process each element
+        TreeItem* current = s.top(); s.pop();
+        // we need data but also how many childs it has to deserialize it later
+        out << current->data(0) << current->childCount();
+        // add childrens to stack
+        for (int i = 0; i < current->childCount(); ++i) {
+            s.push(current->child(i));
+        }
+    }
+
+    // push to the file
+    file.flush();
+    file.close();
+}
+
+void MainWindow::on_pushButton_2_clicked()
+{
+    TreeModel* target_model = qobject_cast<TreeModel*> (targetView->model());
+    serializeModel(target_model, this);
 }

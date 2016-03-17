@@ -16,6 +16,9 @@ class MainWindow : public QMainWindow, private Ui::MainWindow
 
 public:
     MainWindow(QWidget *parent = 0);
+    void deserialize(QDataStream &in, QStack<pair<TreeItem*, int>*>& s);
+    void serializeModel(TreeModel* model, MainWindow* mainWindow);
+
 
 public slots:
     void updateActions();
@@ -48,6 +51,10 @@ private slots:
     void on_btn_remove_input_clicked();
 
     void on_btn_upload_model_target_clicked();
+
+    void on_pushButton_clicked();
+
+    void on_pushButton_2_clicked();
 
 private:
     DragDropModel* model_cible;
