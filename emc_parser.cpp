@@ -32,6 +32,8 @@ Node* current_parent; //active parent
 Node* current_element; //active tag or element
 stack<Node*> open_tags; //tags opened but no closed yet. element at top is the last opened
 const string ATTRIBUTE = "Attributes";
+
+//
 QHash<QString, QString> mapping;
 
 void

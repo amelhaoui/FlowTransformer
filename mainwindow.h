@@ -47,6 +47,8 @@ private slots:
 
     void on_btn_remove_input_clicked();
 
+    void on_btn_upload_model_target_clicked();
+
 private:
     DragDropModel* model_cible;
     DragDropModel* model_source;
@@ -55,7 +57,7 @@ private:
     QStandardItemModel* model_files_input;
     QStandardItemModel* table_model;
     QHash<QString, QString> mapping;
-
+    TreeModel* model_target;
 };
 
 #endif // MAINWINDOW_H

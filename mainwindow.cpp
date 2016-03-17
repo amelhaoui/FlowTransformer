@@ -304,6 +304,7 @@ void MainWindow::on_btn_save_mapping_clicked()
         return;
 
     QDataStream out(&file);
+
     // include 1-1 mapping
     QStandardItemModel* model_table = qobject_cast<QStandardItemModel *> (tableView->model());
     int num_row = model_table->rowCount();
@@ -482,7 +483,7 @@ void print_to_xml_Helper (TreeItem* root, XMLElement* parent, XMLDocument& xmlDo
 
 /*
 * Print to xml cible based on a source model filled with data
-* As a try, we'll go with a mapping "Reverse source in cible"
+*
 */
 void
 print_to_xml (XMLDocument& xmlDoc, TreeModel* m_target, QHash<QString, QString>& mapping,
@@ -518,9 +519,11 @@ print_to_xml (XMLDocument& xmlDoc, TreeModel* m_target, QHash<QString, QString>&
 
 }
 
-void saveFile(XMLDocument& xmlDoc) {
+void saveFile(XMLDocument& xmlDoc, MainWindow* mainWindow) {
     /* prepare and save the file */
-    string filename = "/Users/Abderrahmane/Documents/bingov1.xml";
+    string filename = QFileDialog::getSaveFileName(mainWindow, "Save File",
+                                   QStandardPaths::writableLocation(QStandardPaths::DocumentsLocation),
+                                                                          "XML (*.xml)").toStdString();
     XMLError e = xmlDoc.SaveFile(filename.c_str());
 }
 
@@ -541,13 +544,14 @@ void MainWindow::on_btn_transform_clicked()
     while (!in.atEnd()) {
         QString key, value;
         in >> key >> value;
+        // key and value as key in HashMap to allow reverse mapping
         mapping[key] = value;
         mapping[value] = key;
 
     }
 
     // load target cible
-    TreeModel* target_model = qobject_cast<TreeModel *> (targetView->model());
+    TreeModel* target_model = qobject_cast<TreeModel *> (treeViewTarget->model());
 
     XMLDocument xmlDoc;
 
@@ -565,7 +569,7 @@ void MainWindow::on_btn_transform_clicked()
     }
 
     // save
-    saveFile(xmlDoc);
+    saveFile(xmlDoc, this);
     btn_transform->setDisabled(false);
 }
 
@@ -591,4 +595,25 @@ void MainWindow::on_btn_remove_input_clicked()
 {
     int row = list_input->currentIndex().row();
     model_files_input->removeRow(row);
+}
+
+void MainWindow::on_btn_upload_model_target_clicked()
+{
+    QString fileName;
+    fileName = QFileDialog::getOpenFileName(this,
+                                            tr("Load your input"), "/", tr("File (*.xml *.xls)"));
+    char            buffer[BUFFER_SIZE];
+    if (fileName.isEmpty())
+        return;
+    ModelXML* model_a = new ModelXML(NULL, "american");
+    parse_xml(buffer, BUFFER_SIZE,  fileName.toStdString().c_str(), model_a, mapping);
+    QStringList headers;
+    headers << tr("Tag");
+//    // use target model if available
+//    if (model_cible != NULL)
+//        model_target = qobject_cast<TreeModel*> (model_source);
+//    else
+        model_target = new TreeModel(headers, model_a->root);
+
+    treeViewTarget->setModel(model_target);
 }

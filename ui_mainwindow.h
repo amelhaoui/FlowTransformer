@@ -13,7 +13,6 @@
 #include <QtWidgets/QAction>
 #include <QtWidgets/QApplication>
 #include <QtWidgets/QButtonGroup>
-#include <QtWidgets/QGridLayout>
 #include <QtWidgets/QHBoxLayout>
 #include <QtWidgets/QHeaderView>
 #include <QtWidgets/QLabel>
@@ -23,7 +22,7 @@
 #include <QtWidgets/QMenu>
 #include <QtWidgets/QMenuBar>
 #include <QtWidgets/QPushButton>
-#include <QtWidgets/QSplitter>
+#include <QtWidgets/QSpacerItem>
 #include <QtWidgets/QTabWidget>
 #include <QtWidgets/QTableView>
 #include <QtWidgets/QToolButton>
@@ -41,7 +40,7 @@ public:
     QAction *removeRowAction;
     QAction *insertChildAction;
     QWidget *centralwidget;
-    QVBoxLayout *verticalLayout_5;
+    QVBoxLayout *verticalLayout_10;
     QTabWidget *tabWidget_2;
     QWidget *tab_mapping;
     QVBoxLayout *verticalLayout_6;
@@ -50,11 +49,13 @@ public:
     QVBoxLayout *verticalLayout_2;
     QHBoxLayout *horizontalLayout;
     QLabel *label_3;
+    QPushButton *pushButton;
     QPushButton *btn_parcourir_source;
     QTreeView *sourceView;
     QVBoxLayout *verticalLayout_3;
     QHBoxLayout *horizontalLayout_2;
     QLabel *label_4;
+    QPushButton *pushButton_2;
     QPushButton *btn_parcourir_target;
     QTreeView *targetView;
     QVBoxLayout *verticalLayout_7;
@@ -66,20 +67,28 @@ public:
     QPushButton *btn_upload_mapping;
     QTableView *tableView;
     QWidget *tab_transformation;
-    QGridLayout *gridLayout_3;
-    QSplitter *splitter;
-    QWidget *layoutWidget;
+    QVBoxLayout *verticalLayout_13;
+    QVBoxLayout *verticalLayout_12;
+    QHBoxLayout *horizontalLayout_9;
+    QVBoxLayout *verticalLayout_5;
+    QHBoxLayout *horizontalLayout_7;
+    QLabel *label_5;
+    QPushButton *btn_upload_model_target;
+    QTreeView *treeViewTarget;
+    QVBoxLayout *verticalLayout_11;
+    QVBoxLayout *verticalLayout_9;
     QHBoxLayout *horizontalLayout_5;
     QLabel *label_2;
+    QHBoxLayout *horizontalLayout_8;
+    QToolButton *btn_add_input;
+    QToolButton *btn_remove_input;
     QListView *list_input;
     QVBoxLayout *verticalLayout;
-    QToolButton *btn_remove_input;
-    QToolButton *btn_add_input;
-    QWidget *layoutWidget1;
-    QGridLayout *gridLayout_2;
+    QHBoxLayout *horizontalLayout_6;
     QLabel *label;
     QLineEdit *lineEdit_mapping;
     QPushButton *btn_upload_mapping_2;
+    QSpacerItem *horizontalSpacer;
     QPushButton *btn_transform;
     QMenuBar *menubar;
     QMenu *fileMenu;
@@ -101,8 +110,8 @@ public:
         centralwidget = new QWidget(MainWindow);
         centralwidget->setObjectName(QStringLiteral("centralwidget"));
         centralwidget->setMinimumSize(QSize(400, 0));
-        verticalLayout_5 = new QVBoxLayout(centralwidget);
-        verticalLayout_5->setObjectName(QStringLiteral("verticalLayout_5"));
+        verticalLayout_10 = new QVBoxLayout(centralwidget);
+        verticalLayout_10->setObjectName(QStringLiteral("verticalLayout_10"));
         tabWidget_2 = new QTabWidget(centralwidget);
         tabWidget_2->setObjectName(QStringLiteral("tabWidget_2"));
         tabWidget_2->setMovable(true);
@@ -124,6 +133,11 @@ public:
         label_3->setObjectName(QStringLiteral("label_3"));
 
         horizontalLayout->addWidget(label_3);
+
+        pushButton = new QPushButton(tab_mapping);
+        pushButton->setObjectName(QStringLiteral("pushButton"));
+
+        horizontalLayout->addWidget(pushButton);
 
         btn_parcourir_source = new QPushButton(tab_mapping);
         btn_parcourir_source->setObjectName(QStringLiteral("btn_parcourir_source"));
@@ -168,6 +182,11 @@ public:
         label_4->setObjectName(QStringLiteral("label_4"));
 
         horizontalLayout_2->addWidget(label_4);
+
+        pushButton_2 = new QPushButton(tab_mapping);
+        pushButton_2->setObjectName(QStringLiteral("pushButton_2"));
+
+        horizontalLayout_2->addWidget(pushButton_2);
 
         btn_parcourir_target = new QPushButton(tab_mapping);
         btn_parcourir_target->setObjectName(QStringLiteral("btn_parcourir_target"));
@@ -251,81 +270,129 @@ public:
         tab_transformation = new QWidget();
         tab_transformation->setObjectName(QStringLiteral("tab_transformation"));
         tab_transformation->setAcceptDrops(true);
-        gridLayout_3 = new QGridLayout(tab_transformation);
-        gridLayout_3->setObjectName(QStringLiteral("gridLayout_3"));
-        splitter = new QSplitter(tab_transformation);
-        splitter->setObjectName(QStringLiteral("splitter"));
-        splitter->setOrientation(Qt::Horizontal);
-        layoutWidget = new QWidget(splitter);
-        layoutWidget->setObjectName(QStringLiteral("layoutWidget"));
-        horizontalLayout_5 = new QHBoxLayout(layoutWidget);
+        verticalLayout_13 = new QVBoxLayout(tab_transformation);
+        verticalLayout_13->setObjectName(QStringLiteral("verticalLayout_13"));
+        verticalLayout_12 = new QVBoxLayout();
+        verticalLayout_12->setObjectName(QStringLiteral("verticalLayout_12"));
+        horizontalLayout_9 = new QHBoxLayout();
+        horizontalLayout_9->setObjectName(QStringLiteral("horizontalLayout_9"));
+        verticalLayout_5 = new QVBoxLayout();
+        verticalLayout_5->setObjectName(QStringLiteral("verticalLayout_5"));
+        horizontalLayout_7 = new QHBoxLayout();
+        horizontalLayout_7->setObjectName(QStringLiteral("horizontalLayout_7"));
+        label_5 = new QLabel(tab_transformation);
+        label_5->setObjectName(QStringLiteral("label_5"));
+
+        horizontalLayout_7->addWidget(label_5);
+
+        btn_upload_model_target = new QPushButton(tab_transformation);
+        btn_upload_model_target->setObjectName(QStringLiteral("btn_upload_model_target"));
+
+        horizontalLayout_7->addWidget(btn_upload_model_target);
+
+
+        verticalLayout_5->addLayout(horizontalLayout_7);
+
+        treeViewTarget = new QTreeView(tab_transformation);
+        treeViewTarget->setObjectName(QStringLiteral("treeViewTarget"));
+
+        verticalLayout_5->addWidget(treeViewTarget);
+
+
+        horizontalLayout_9->addLayout(verticalLayout_5);
+
+        verticalLayout_11 = new QVBoxLayout();
+        verticalLayout_11->setObjectName(QStringLiteral("verticalLayout_11"));
+        verticalLayout_9 = new QVBoxLayout();
+        verticalLayout_9->setObjectName(QStringLiteral("verticalLayout_9"));
+        horizontalLayout_5 = new QHBoxLayout();
         horizontalLayout_5->setObjectName(QStringLiteral("horizontalLayout_5"));
-        horizontalLayout_5->setContentsMargins(0, 0, 0, 0);
-        label_2 = new QLabel(layoutWidget);
+        label_2 = new QLabel(tab_transformation);
         label_2->setObjectName(QStringLiteral("label_2"));
 
         horizontalLayout_5->addWidget(label_2);
 
-        list_input = new QListView(layoutWidget);
-        list_input->setObjectName(QStringLiteral("list_input"));
+        horizontalLayout_8 = new QHBoxLayout();
+        horizontalLayout_8->setObjectName(QStringLiteral("horizontalLayout_8"));
+        btn_add_input = new QToolButton(tab_transformation);
+        btn_add_input->setObjectName(QStringLiteral("btn_add_input"));
+        btn_add_input->setEnabled(true);
+        QIcon icon;
+        icon.addFile(QStringLiteral(":/inc/icons/inc/icons/add.png"), QSize(), QIcon::Selected, QIcon::On);
+        btn_add_input->setIcon(icon);
 
-        horizontalLayout_5->addWidget(list_input);
+        horizontalLayout_8->addWidget(btn_add_input);
+
+        btn_remove_input = new QToolButton(tab_transformation);
+        btn_remove_input->setObjectName(QStringLiteral("btn_remove_input"));
+        QIcon icon1;
+        icon1.addFile(QStringLiteral(":/inc/icons/inc/icons/delete.png"), QSize(), QIcon::Normal, QIcon::Off);
+        btn_remove_input->setIcon(icon1);
+
+        horizontalLayout_8->addWidget(btn_remove_input);
+
+
+        horizontalLayout_5->addLayout(horizontalLayout_8);
+
+
+        verticalLayout_9->addLayout(horizontalLayout_5);
+
+        list_input = new QListView(tab_transformation);
+        list_input->setObjectName(QStringLiteral("list_input"));
+        list_input->setEnabled(true);
+
+        verticalLayout_9->addWidget(list_input);
+
+
+        verticalLayout_11->addLayout(verticalLayout_9);
 
         verticalLayout = new QVBoxLayout();
         verticalLayout->setObjectName(QStringLiteral("verticalLayout"));
-        btn_remove_input = new QToolButton(layoutWidget);
-        btn_remove_input->setObjectName(QStringLiteral("btn_remove_input"));
-        QIcon icon;
-        icon.addFile(QStringLiteral(":/inc/icons/inc/icons/delete.png"), QSize(), QIcon::Normal, QIcon::Off);
-        btn_remove_input->setIcon(icon);
-
-        verticalLayout->addWidget(btn_remove_input);
-
-        btn_add_input = new QToolButton(layoutWidget);
-        btn_add_input->setObjectName(QStringLiteral("btn_add_input"));
-        btn_add_input->setEnabled(true);
-        QIcon icon1;
-        icon1.addFile(QStringLiteral(":/inc/icons/inc/icons/add.png"), QSize(), QIcon::Selected, QIcon::On);
-        btn_add_input->setIcon(icon1);
-
-        verticalLayout->addWidget(btn_add_input);
-
-
-        horizontalLayout_5->addLayout(verticalLayout);
-
-        splitter->addWidget(layoutWidget);
-        layoutWidget1 = new QWidget(splitter);
-        layoutWidget1->setObjectName(QStringLiteral("layoutWidget1"));
-        gridLayout_2 = new QGridLayout(layoutWidget1);
-        gridLayout_2->setObjectName(QStringLiteral("gridLayout_2"));
-        gridLayout_2->setContentsMargins(0, 0, 0, 0);
-        label = new QLabel(layoutWidget1);
+        horizontalLayout_6 = new QHBoxLayout();
+        horizontalLayout_6->setObjectName(QStringLiteral("horizontalLayout_6"));
+        label = new QLabel(tab_transformation);
         label->setObjectName(QStringLiteral("label"));
 
-        gridLayout_2->addWidget(label, 0, 0, 1, 1);
+        horizontalLayout_6->addWidget(label);
 
-        lineEdit_mapping = new QLineEdit(layoutWidget1);
+        lineEdit_mapping = new QLineEdit(tab_transformation);
         lineEdit_mapping->setObjectName(QStringLiteral("lineEdit_mapping"));
 
-        gridLayout_2->addWidget(lineEdit_mapping, 0, 1, 1, 1);
+        horizontalLayout_6->addWidget(lineEdit_mapping);
 
-        btn_upload_mapping_2 = new QPushButton(layoutWidget1);
+        btn_upload_mapping_2 = new QPushButton(tab_transformation);
         btn_upload_mapping_2->setObjectName(QStringLiteral("btn_upload_mapping_2"));
 
-        gridLayout_2->addWidget(btn_upload_mapping_2, 0, 2, 1, 1);
+        horizontalLayout_6->addWidget(btn_upload_mapping_2);
 
-        splitter->addWidget(layoutWidget1);
 
-        gridLayout_3->addWidget(splitter, 0, 0, 1, 1);
+        verticalLayout->addLayout(horizontalLayout_6);
+
+
+        verticalLayout_11->addLayout(verticalLayout);
+
+
+        horizontalLayout_9->addLayout(verticalLayout_11);
+
+
+        verticalLayout_12->addLayout(horizontalLayout_9);
+
+        horizontalSpacer = new QSpacerItem(40, 20, QSizePolicy::Expanding, QSizePolicy::Minimum);
+
+        verticalLayout_12->addItem(horizontalSpacer);
 
         btn_transform = new QPushButton(tab_transformation);
         btn_transform->setObjectName(QStringLiteral("btn_transform"));
+        btn_transform->setEnabled(true);
 
-        gridLayout_3->addWidget(btn_transform, 1, 0, 1, 1);
+        verticalLayout_12->addWidget(btn_transform);
+
+
+        verticalLayout_13->addLayout(verticalLayout_12);
 
         tabWidget_2->addTab(tab_transformation, QString());
 
-        verticalLayout_5->addWidget(tabWidget_2);
+        verticalLayout_10->addWidget(tabWidget_2);
 
         MainWindow->setCentralWidget(centralwidget);
         menubar = new QMenuBar(MainWindow);
@@ -336,10 +403,7 @@ public:
         actionsMenu = new QMenu(menubar);
         actionsMenu->setObjectName(QStringLiteral("actionsMenu"));
         MainWindow->setMenuBar(menubar);
-        QWidget::setTabOrder(btn_parcourir_target, lineEdit_mapping);
-        QWidget::setTabOrder(lineEdit_mapping, btn_upload_mapping_2);
-        QWidget::setTabOrder(btn_upload_mapping_2, btn_transform);
-        QWidget::setTabOrder(btn_transform, btn_parcourir_source);
+        QWidget::setTabOrder(btn_parcourir_target, btn_parcourir_source);
         QWidget::setTabOrder(btn_parcourir_source, targetView);
         QWidget::setTabOrder(targetView, btn_upload_mapping);
         QWidget::setTabOrder(btn_upload_mapping, sourceView);
@@ -357,7 +421,7 @@ public:
 
         retranslateUi(MainWindow);
 
-        tabWidget_2->setCurrentIndex(0);
+        tabWidget_2->setCurrentIndex(1);
 
 
         QMetaObject::connectSlotsByName(MainWindow);
@@ -375,17 +439,21 @@ public:
         insertChildAction->setText(QApplication::translate("MainWindow", "Insert Child", 0));
         insertChildAction->setShortcut(QApplication::translate("MainWindow", "Ctrl+N", 0));
         label_3->setText(QApplication::translate("MainWindow", "Model source", 0));
-        btn_parcourir_source->setText(QApplication::translate("MainWindow", "Parcourir", 0));
+        pushButton->setText(QApplication::translate("MainWindow", "Save", 0));
+        btn_parcourir_source->setText(QApplication::translate("MainWindow", "Upload", 0));
         label_4->setText(QApplication::translate("MainWindow", "Model cible", 0));
-        btn_parcourir_target->setText(QApplication::translate("MainWindow", "Parcourir", 0));
+        pushButton_2->setText(QApplication::translate("MainWindow", "Save", 0));
+        btn_parcourir_target->setText(QApplication::translate("MainWindow", "Upload", 0));
         btn_save_mapping->setText(QApplication::translate("MainWindow", "Save", 0));
         btn_remove_mapping->setText(QApplication::translate("MainWindow", "Remove", 0));
         btn_add_mapping->setText(QApplication::translate("MainWindow", "Add", 0));
         btn_upload_mapping->setText(QApplication::translate("MainWindow", "Upload", 0));
         tabWidget_2->setTabText(tabWidget_2->indexOf(tab_mapping), QApplication::translate("MainWindow", "Mapping", 0));
+        label_5->setText(QApplication::translate("MainWindow", "Model Cible", 0));
+        btn_upload_model_target->setText(QApplication::translate("MainWindow", "Upload", 0));
         label_2->setText(QApplication::translate("MainWindow", "Input", 0));
-        btn_remove_input->setText(QApplication::translate("MainWindow", "...", 0));
         btn_add_input->setText(QApplication::translate("MainWindow", "...", 0));
+        btn_remove_input->setText(QApplication::translate("MainWindow", "...", 0));
         label->setText(QApplication::translate("MainWindow", "Mapping", 0));
         btn_upload_mapping_2->setText(QApplication::translate("MainWindow", "Upload", 0));
         btn_transform->setText(QApplication::translate("MainWindow", "Transform", 0));
