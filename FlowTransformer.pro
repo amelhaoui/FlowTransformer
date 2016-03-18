@@ -22,7 +22,8 @@ SOURCES += main.cpp\
     itemtabledelegate.cpp \
     treemodelcompleter.cpp \
     inc/tinyxml2.cpp \
-    dragdropmodel.cpp
+    dragdropmodel.cpp \
+    utility.cpp
 
 HEADERS  += mainwindow.h \
     treeitem.h \
@@ -33,6 +34,7 @@ HEADERS  += mainwindow.h \
     treemodelcompleter.h \
     inc/tinyxml2.h \
     dragdropmodel.h \
+    utility.h
 
 
 FORMS    += mainwindow.ui

@@ -4,7 +4,7 @@
 #include "emc_parser.cpp"
 #include "treemodel.h"
 #include "mainwindow.h"
-
+#include "utility.h"
 #include "treeitem.h"
 #include "emc_parse_utility.h"
 #include "itemtabledelegate.h"
@@ -279,20 +279,34 @@ void MainWindow::highlight(const QModelIndex &index)
 
 void MainWindow::on_btn_add_mapping_clicked()
 {
-    QStandardItemModel* model_table = qobject_cast<QStandardItemModel*>(tableView->model());
-    model_table->appendRow(new QStandardItem(1));
+    QModelIndex source_index = sourceView->selectionModel()->currentIndex();
+    QModelIndex target_index = targetView->selectionModel()->currentIndex();
+
+    QString source = source_index.data().toString()
+            , target = target_index.data().toString();
+    if (source_index.isValid() && target_index.isValid()) {
+        source = Utility::findPath(source, source_index);
+        target = Utility::findPath(target, target_index);
+        
+        QStandardItemModel* model_table = qobject_cast<QStandardItemModel*>(tableView->model());
+        QList<QStandardItem*> row;
+        row.append(new QStandardItem(source));
+        row.append(new QStandardItem(target));
+        model_table->appendRow(row);
+    }
+    
 }
 
 void MainWindow::on_btn_save_mapping_clicked()
 {
-    TreeModel* target_model = qobject_cast<TreeModel *> (targetView->model());
-
-    TreeItem* root = target_model->getRoot(); // fake root represent the header
-    if (root != NULL && root->childCount() > 0)
-        root = root->child(0);
-
-    if (root == NULL )
-        return;
+    // the use choose to save mapping from drag and drop or from table
+    // can't mix both
+    QMessageBox msgBox;
+    msgBox.setText(tr("Save Mapping"));
+    msgBox.setInformativeText(tr("Would you like to save them using:"));
+    QPushButton* tree_view = msgBox.addButton(tr("Tree View"), QMessageBox::ActionRole);
+    QPushButton* table_view = msgBox.addButton(tr("Table View"), QMessageBox::ActionRole);
+    msgBox.exec();
 
     QString fileName = QFileDialog::getSaveFileName(this, tr("Save File"),
                                                     QStandardPaths::writableLocation(QStandardPaths::DocumentsLocation),
@@ -307,22 +321,60 @@ void MainWindow::on_btn_save_mapping_clicked()
 
     QDataStream out(&file);
 
-    // include 1-1 mapping
-    QStandardItemModel* model_table = qobject_cast<QStandardItemModel *> (tableView->model());
-    int num_row = model_table->rowCount();
+    // check which button was clicked
+    if (msgBox.clickedButton() == tree_view) {
+        TreeModel* target_model = qobject_cast<TreeModel *> (targetView->model());
+        TreeItem* root = target_model->getRoot(); // fake root represent the header
+        if (root != NULL && root->childCount() > 0)
+            root = root->child(0);
+        else
+            return;
 
-    // fixs saving if user did not finish editing
-    tableView->setDisabled(true);
-    tableView->setDisabled(false);
+        // we are at the top element
+        // we nedd to trarverse the tree using a stack
+        // each time we visit an element we check if it has a mapping
+        // if yes we save it
+        QStack<TreeItem*> s;
+        s.push(root);
 
-    for (int i = 0; i < num_row; ++i) {
-        QStandardItem* item1 =  model_table->item(i, 0);
-        QStandardItem* item2 =  model_table->item(i, 1);
+        while(!s.empty()) {
+            TreeItem* current = s.top(); s.pop();
+            if (!current->data(1).toString().isEmpty()) {
+                QString element = current->data(0).toString();
+                element = Utility::findPath(element, current->parent());
+                // to check: serialize to string is necessary ?? for deserialize ??
+                out << element << current->data(1).toString();
+            }
 
-        // A validate transformation -> both items !empty
-        if (!item1->text().isEmpty() && !item2->text().isEmpty())
-            out << item1->text() << item2->text();
+            for (int i = 0; i < current->childCount(); ++i) {
+                s.push(current->child(i));
+            }
+        }
+    } else if (msgBox.clickedButton() == table_view) {
+        /** save using the table **/
+        QStandardItemModel* model_table = qobject_cast<QStandardItemModel *> (tableView->model());
+        int num_row = model_table->rowCount();
+
+        // fixs saving if user did not finish editing
+        tableView->setDisabled(true);
+        tableView->setDisabled(false);
+
+        for (int i = 0; i < num_row; ++i) {
+            QStandardItem* item1 =  model_table->item(i, 0);
+            QStandardItem* item2 =  model_table->item(i, 1);
+
+            // A validate transformation -> both items !empty
+            if (!item1->text().isEmpty() && !item2->text().isEmpty())
+                out << item1->text() << item2->text();
+        }
+        /** end of save **/
     }
+
+    file.flush();
+    file.close();
+
+
+
 //    // add the target model into the mapping
 //    TreeModel* target_model = qobject_cast<TreeModel *> (treeView->model());
 //    if (target_model == NULL)
@@ -345,8 +397,7 @@ void MainWindow::on_btn_save_mapping_clicked()
 //        }
 //    }
 
-    file.flush();
-    file.close();
+
 }
 
 void MainWindow::on_btn_upload_mapping_clicked()
@@ -374,6 +425,7 @@ void MainWindow::on_btn_upload_mapping_clicked()
         model_table->setItem(row, 1, new QStandardItem(col2));
         ++row;
     }
+
     tableView->setDisabled(false);
     file.close();
 
@@ -634,12 +686,12 @@ void MainWindow::on_btn_upload_model_target_clicked()
     s.push(new pair<TreeItem*, int>(root->child(0), num));
     // now we have created our root and know how many childs it has
 
-    deserialize(in, s);
+    deserializeModel(in, s);
 
     model_target = new TreeModel(root);
     treeViewTarget->setModel(model_target);
 }
-void MainWindow::deserialize(QDataStream &in, QStack<pair<TreeItem*, int>*>& s) {
+void MainWindow::deserializeModel(QDataStream &in, QStack<pair<TreeItem*, int>*>& s) {
     if (s.empty())
         return;
 
@@ -655,7 +707,7 @@ void MainWindow::deserialize(QDataStream &in, QStack<pair<TreeItem*, int>*>& s) 
         current->insertChildren(i, 1, var);
         s.push(new pair<TreeItem*, int>(current->child(i), num));
         // before we continue
-        deserialize(in, s);
+        deserializeModel(in, s);
     }
 }
 

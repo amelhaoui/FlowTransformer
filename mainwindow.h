@@ -16,7 +16,7 @@ class MainWindow : public QMainWindow, private Ui::MainWindow
 
 public:
     MainWindow(QWidget *parent = 0);
-    void deserialize(QDataStream &in, QStack<pair<TreeItem*, int>*>& s);
+    void deserializeModel(QDataStream &in, QStack<pair<TreeItem*, int>*>& s);
     void serializeModel(TreeModel* model, MainWindow* mainWindow);
 
 
