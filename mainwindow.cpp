@@ -290,8 +290,8 @@ void MainWindow::on_btn_add_mapping_clicked()
         
         QStandardItemModel* model_table = qobject_cast<QStandardItemModel*>(tableView->model());
         QList<QStandardItem*> row;
-        row.append(new QStandardItem(source));
         row.append(new QStandardItem(target));
+        row.append(new QStandardItem(source));
         model_table->appendRow(row);
     }
     
